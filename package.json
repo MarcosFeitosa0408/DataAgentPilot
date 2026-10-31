@@ -1,0 +1,9 @@
+{
+  "name": "data-agent-pilot",
+  "version": "1.0.0",
+  "description": "Análise de qualidade de dados 100% no navegador, com diagnósticos rastreáveis.",
+  "scripts": { "test": "node tests/run-tests.js" },
+  "devDependencies": { "jsdom": "^24.0.0", "xlsx": "0.18.5" },
+  "license": "UNLICENSED",
+  "private": true
+}

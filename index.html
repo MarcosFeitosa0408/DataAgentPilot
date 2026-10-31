@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Agent Pilot</title>
+<style>
+:root{--bg:#07111F;--sf:#0B1B2D;--blue:#2563EB;--neon:#00B8FF;--cy:#22D3EE;--tx:#EAF4FF;--mu:#8fa7c0;--ok:#10B981;--wa:#F59E0B;--er:#EF4444;--bd:#1b3552}
+*{box-sizing:border-box;margin:0}
+body{font-family:Inter,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at top,#0f2a4a,transparent 40%),var(--bg);color:var(--tx);line-height:1.5}
+.w{width:min(1200px,100% - 28px);margin:0 auto}
+header{border-bottom:1px solid var(--bd);background:rgba(7,17,31,.9);position:sticky;top:0;z-index:5;backdrop-filter:blur(10px)}
+.hd{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:12px 0}
+.logo{display:flex;gap:10px;align-items:center}.ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#03121f;background:linear-gradient(135deg,var(--cy),var(--blue));box-shadow:0 0 18px rgba(0,184,255,.45)}
+.logo b{font-size:1.15rem;letter-spacing:.06em}.logo small{display:block;color:var(--mu);font-size:.7rem}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}nav a{color:var(--mu);text-decoration:none;font-size:.82rem;padding:6px 10px;border-radius:8px}nav a:hover,nav a:focus{color:var(--tx);background:rgba(0,184,255,.12);outline:none}
+section{margin:26px 0}h2{font-size:1.15rem;margin-bottom:12px;color:var(--cy)}
+.card{background:rgba(11,27,45,.85);border:1px solid var(--bd);border-radius:16px;padding:18px;box-shadow:0 0 24px rgba(0,184,255,.06)}
+.drop{border:2px dashed #2b4d73;border-radius:16px;padding:34px 16px;text-align:center}.drop.on{border-color:var(--neon);background:rgba(0,184,255,.06)}
+button,select,input{font:inherit;color:var(--tx);background:#10263d;border:1px solid var(--bd);border-radius:10px;padding:8px 12px}
+button{cursor:pointer;font-weight:600}button:hover,button:focus-visible{border-color:var(--neon);outline:none}
+.pri{background:linear-gradient(135deg,var(--neon),var(--blue));color:#03121f;border:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.k span{display:block;color:var(--mu);font-size:.78rem}.k strong{font-size:1.45rem}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
+.tw{overflow-x:auto;max-height:420px;overflow-y:auto}table{border-collapse:collapse;width:100%;font-size:.84rem}
+th,td{padding:8px 10px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}th{color:var(--mu);font-size:.72rem;text-transform:uppercase;position:sticky;top:0;background:#0B1B2D}
+.b{padding:2px 9px;border-radius:99px;font-size:.74rem;font-weight:700;border:1px solid}
+.Aprovada{color:var(--ok)}.Atenção{color:var(--wa)}.Falha{color:var(--er)}.Nãoavaliada{color:var(--mu)}
+.err{color:#ffd0d0;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);padding:12px;border-radius:12px;margin-top:12px}
+.note{color:var(--mu);font-size:.8rem;margin-top:8px}.hide{display:none}
+.bar{display:grid;grid-template-columns:110px 1fr auto;gap:8px;align-items:center;font-size:.8rem;margin:5px 0}.bar i{display:block;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--cy));box-shadow:0 0 10px rgba(0,184,255,.4)}
+details summary{cursor:pointer;color:var(--cy)}
+pre{white-space:pre-wrap;font-size:.8rem;color:#cfe6ff}
+.hero{max-width:800px;margin:56px auto 32px;text-align:center}.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.1;margin:10px 0 16px}.hero p{color:var(--mu)}
+.badge{display:inline-block;padding:5px 12px;border:1px solid rgba(0,184,255,.4);border-radius:99px;background:rgba(0,184,255,.08);color:var(--neon);font-size:.72rem;font-weight:700;letter-spacing:.1em}
+.up{max-width:850px;margin:0 auto 56px;padding:24px;border-radius:24px}.upi{width:56px;height:56px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:rgba(0,184,255,.1);color:var(--neon);font-size:1.7rem}
+.big{width:100%;margin-top:16px;padding:14px;font-size:1rem}.big:disabled{opacity:.45;cursor:not-allowed}.ld{margin-top:14px;padding:12px;text-align:center;color:var(--neon);background:rgba(0,184,255,.08);border-radius:12px}
+.sh{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:18px}.sh h2{font-size:1.9rem;color:var(--tx);margin:6px 0 0}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;margin-top:20px}.full{grid-column:1/-1}.card h3{margin-bottom:14px;font-size:1.05rem}
+.tags{display:flex;flex-wrap:wrap;gap:8px}.tag{padding:7px 12px;border-radius:99px;background:rgba(0,184,255,.09);border:1px solid rgba(0,184,255,.28);color:var(--neon);font-size:.85rem}
+#ins ul{padding-left:20px}#ins li{margin-bottom:10px;color:#d6e6f5}.ft{border-top:1px solid var(--bd);padding:24px;text-align:center;color:var(--mu);font-size:.85rem}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.pr{display:none}
+@media print{@page{size:A4;margin:16mm 12mm 18mm;@top-left{content:"Data Agent Pilot — relatório de análise";font-size:9px;color:#555}@bottom-center{content:"Página " counter(page) " de " counter(pages);font-size:9px;color:#555}}
+:root{--tx:#111;--mu:#444;--bd:#ccc;--cy:#0a4a8a;--neon:#0a4a8a;--sf:#fff}
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{background:#fff!important;color:#111}header,.hero,.up,.sh .row,.ft,.drop,#sel,.row select{display:none!important}
+.pr{display:block;margin-bottom:12px;font-size:.85rem}.w{width:100%}.grid{display:block}.card{background:#fff!important;border:1px solid #ccc;box-shadow:none;margin-bottom:12px;break-inside:avoid-page}
+.card.full{break-inside:auto}.tw{max-height:none!important;overflow:visible!important}table{font-size:9px}th{position:static;background:#fff}th,td{white-space:normal;color:#111}.kpis{grid-template-columns:repeat(4,1fr)}
+.tag,.badge{color:#0a4a8a;border-color:#999;background:#fff}.sh h2{font-size:1.4rem}.Aprovada{color:#0a7a50}.Atenção{color:#9a6200}.Falha{color:#b00020}}
+</style>
+</head>
+<body>
+<header><div class="w hd"><div class="logo"><div class="ic" aria-hidden="true">DA</div><div><b>DATA AGENT PILOT</b><small>Transformando dados brutos em decisões confiáveis.</small></div></div></div></header>
+<main class="w">
+<section class="hero"><span class="badge">DATA QUALITY • ANALYTICS • INTELLIGENCE</span><h1>Analise seus dados em poucos segundos</h1>
+<p>Envie um arquivo CSV ou Excel e receba indicadores de qualidade, diagnósticos rastreáveis e insights fundamentados nos seus dados.</p></section>
+<section class="card up"><div class="drop" id="drop"><div class="upi" aria-hidden="true">↑</div><h3>Envie seu arquivo</h3><p class="note">Selecione um arquivo CSV ou Excel (.xlsx) ou arraste para cá</p>
+<input type="file" id="file" accept=".csv,.xlsx" hidden><div class="row" style="justify-content:center"><button type="button" id="sel">Selecionar arquivo</button><button type="button" id="demo">Carregar exemplo fictício</button></div>
+<p class="note" id="selFile">Nenhum arquivo selecionado</p>
+<div class="row" style="justify-content:center"><label for="tol">Tolerância financeira (R$)</label><input id="tol" type="number" min="0" step="0.01" value="0" style="width:90px"><span id="sheetBox" class="hide"><label for="sheet">Aba</label> <select id="sheet"></select></span></div></div>
+<button type="button" id="go" class="pri big" disabled>Analisar dados</button><div id="ld" class="ld hide" aria-live="polite">Analisando seus dados...</div><div id="msg" role="alert" aria-live="polite"></div></section>
+<section id="out" class="hide"><div class="pr" id="pr"></div><div class="sh"><div><span class="badge">RESULTADOS</span><h2>Visão geral dos dados</h2></div><p class="note" id="rname"></p><div class="row" style="margin:0"><button class="pri" id="xp" type="button">Exportar PDF</button><button id="xh" type="button">Dashboard HTML</button><button id="xm" type="button">Descrição da análise (MD)</button><button id="xj" type="button">JSON</button><button id="xc" type="button">Diagnósticos (CSV)</button></div></div>
+<div class="kpis" id="kpis"></div><p class="note" id="transf"></p>
+<div id="rest" class="grid">
+<article class="card full"><h3>Mapeamento de colunas</h3><p class="note">Detectado automaticamente pelo nome da coluna (com sinônimos em português e inglês). Se a sua planilha usa outros nomes, escolha a coluna correta e a análise é refeita.</p><div id="mp" class="row"></div></article>
+<article class="card"><h3>Insights automáticos</h3><div id="ins"></div></article>
+<article class="card"><h3>Consistência Financeira</h3><div id="fcs" class="tags"></div></article>
+<article class="card full"><h3>Detalhamento das Divergências Financeiras</h3><div id="fi"></div></article>
+<article class="card"><h3>Métricas identificadas</h3><div id="mt" class="tags"></div><h3 style="margin-top:18px">Colunas de calendário</h3><div id="cal" class="tags"></div></article>
+<article class="card"><h3>Alertas Financeiros</h3><div id="al" class="tags"></div></article>
+<article class="card"><h3>Receita por Categoria</h3><div id="c1"></div></article>
+<article class="card"><h3>Evolução Mensal da Receita</h3><div id="c2"></div></article>
+<article class="card full"><h3>Estatísticas numéricas</h3><div id="st"></div></article>
+<article class="card full" id="esquema"><h3>Perfil Inteligente do Esquema</h3><div class="row" style="margin:0 0 10px"><label for="pf">Filtro</label><select id="pf"><option value="all">Todas as colunas</option><option value="prob">Com problemas</option><option value="ok">Completas</option><option value="mix">Tipos mistos</option></select></div><div id="schema"></div><p class="note">Completude = preenchidos ÷ registros analisados (0% sem registros). Ausentes: vazio, null, nulo, nan, n/a.</p></article>
+<article class="card full" id="contrato"><h3>Data Quality Contract (v1.0)</h3><div id="rules"></div><p class="note">Severidades: Crítico = regra financeira violada; Alto = estrutura/calendário impossível; Médio = tipos mistos ou duplicidade; Baixo = ausências; Informativo = negativos/zeros (podem ser estornos legítimos). Nenhum índice único de qualidade é calculado. Regra não aplicável = "Não avaliada".</p></article>
+<article class="card full" id="diag"><h3>Diagnóstico Inteligente de Registros</h3><div class="row" style="margin:0 0 10px"><label for="fr">Regra</label><select id="fr"></select><label for="fs">Severidade</label><select id="fs"><option value="">Todas</option><option>Crítico</option><option>Alto</option><option>Médio</option><option>Baixo</option><option>Informativo</option></select></div><div id="dg"></div></article>
+<article class="card full" id="trace"><details open><summary>Execution Trace &amp; Data Lineage</summary><div id="tr"></div></details><p class="note">Arquivos exportados podem conter dados confidenciais. Nada é publicado automaticamente.</p></article>
+</div></section></main>
+<footer class="ft">Data Agent Pilot — análise de dados verificável, processada localmente</footer>
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const el=(t,x,c)=>{const e=document.createElement(t);if(x!==undefined&&x!==null)e.textContent=x;if(c)e.className=c;return e};
+const F2=new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),F0=new Intl.NumberFormat('pt-BR');
+const money=v=>'R$ '+F2.format(v), pct=v=>F2.format(v)+'%';
+const MISSING=/^(null|nulo|nan|n\/a)?$/i;
+const isEmpty=v=>v==null||MISSING.test(String(v).trim());
+const norm=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+let S={};
+
+// ---------- Leitura ----------
+function parseCSV(t){
+  if(t.charCodeAt(0)===0xFEFF)t=t.slice(1);
+  const first=t.split(/\r?\n/,1)[0];
+  const d=[',',';','\t'].map(c=>[c,first.split(c).length]).sort((a,b)=>b[1]-a[1])[0][0];
+  const rows=[];let r=[],f='',q=false;
+  for(let i=0;i<t.length;i++){const c=t[i];
+    if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c==='"')q=true;
+    else if(c===d){r.push(f);f=''}
+    else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;r.push(f);rows.push(r);r=[];f=''}
+    else f+=c}
+  if(f!==''||r.length){r.push(f);rows.push(r)}
+  return{rows,delim:d};
+}
+// Heurística numérica BR/internacional (cautelosa): retorna NaN se não for número.
+function num(s){
+  let x=String(s).trim().replace(/^R\$\s*/,'').replace(/\s/g,'');
+  if(!/^[-+]?\d[\d.,]*$/.test(x))return NaN;
+  const c=x.lastIndexOf(','),p=x.lastIndexOf('.');
+  if(c>=0&&p>=0)x=c>p?x.replace(/\./g,'').replace(',','.'):x.replace(/,/g,'');
+  else if(c>=0)x=(x.match(/,/g).length>1)?x.replace(/,/g,''):x.replace(',','.');
+  else if(p>=0&&x.match(/\./g).length>1)x=x.replace(/\./g,'');
+  return Number(x);
+}
+function pdate(v){const s=String(v).trim();let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T ].*)?$/),y,mo,d;
+  if(m){y=+m[1];mo=+m[2];d=+m[3]}else if(m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)){d=+m[1];mo=+m[2];y=+m[3]}else return null;
+  const t=new Date(Date.UTC(y,mo-1,d));return{y,m:mo,d,ok:mo>=1&&mo<=12&&t.getUTCMonth()===mo-1&&t.getUTCDate()===d}}
+function sha256js(buf){
+  const P=[];for(let n=2;P.length<64;n++)if(P.every(p=>n%p))P.push(n);
+  const fr=x=>Math.floor((x-Math.floor(x))*4294967296)>>>0,K=P.map(p=>fr(Math.cbrt(p))),H=P.slice(0,8).map(p=>fr(Math.sqrt(p)));
+  const b=new Uint8Array(buf),l=b.length,n=((l+9+63)>>6)<<6,m=new Uint8Array(n);m.set(b);m[l]=0x80;
+  const dv=new DataView(m.buffer);dv.setUint32(n-8,Math.floor(l/536870912));dv.setUint32(n-4,(l<<3)>>>0);
+  const rr=(x,k)=>(x>>>k)|(x<<(32-k)),W=new Uint32Array(64);
+  for(let o=0;o<n;o+=64){for(let i=0;i<16;i++)W[i]=dv.getUint32(o+i*4);
+    for(let i=16;i<64;i++){const x=W[i-15],y=W[i-2];W[i]=(W[i-16]+(rr(x,7)^rr(x,18)^(x>>>3))+W[i-7]+(rr(y,17)^rr(y,19)^(y>>>10)))>>>0}
+    let[a,c,d,e,f,g,h,j]=H;
+    for(let i=0;i<64;i++){const t1=(j+(rr(f,6)^rr(f,11)^rr(f,25))+((f&g)^(~f&h))+K[i]+W[i])>>>0,t2=((rr(a,2)^rr(a,13)^rr(a,22))+((a&c)^(a&d)^(c&d)))>>>0;j=h;h=g;g=f;f=(e+t1)>>>0;e=d;d=c;c=a;a=(t1+t2)>>>0}
+    [a,c,d,e,f,g,h,j].forEach((v,i)=>H[i]=(H[i]+v)>>>0)}
+  return H.map(v=>v.toString(16).padStart(8,'0')).join('');
+}
+async function sha256(buf){
+  if(window.crypto&&crypto.subtle){try{const h=await crypto.subtle.digest('SHA-256',buf);S.hm='Web Crypto API';return[...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){}}
+  S.hm='implementação JavaScript própria (alternativa à Web Crypto)';return sha256js(buf);
+}
+function loadSheetJS(){
+  return new Promise((ok,no)=>{if(window.XLSX)return ok();
+    const add=(src,fail)=>{const x=document.createElement('script');x.src=src;x.onload=ok;x.onerror=fail;document.head.append(x)};
+    add('libs/xlsx.full.min.js',()=>add('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>no(new Error('não foi possível carregar a biblioteca SheetJS. Mantenha a pasta libs/ ao lado do index.html (modo offline) ou conecte-se à internet. CSV funciona sem ela.'))))});
+}
+function say(m){const b=$('#msg');b.replaceChildren();if(m)b.append(el('div',m,'err'))}
+
+async function load(buf,name){
+  say('');S={name,size:buf.byteLength,start:new Date(),p0:performance.now(),notes:[]};
+  const ext=(name.split('.').pop()||'').toLowerCase();
+  if(!['csv','xlsx'].includes(ext))return say('Formato incompatível: envie um arquivo .csv ou .xlsx.');
+  if(!buf.byteLength)return say('O arquivo está vazio.');
+  S.format=ext;S.hash=await sha256(buf);
+  try{
+    if(ext==='csv'){
+      let t=new TextDecoder('utf-8').decode(buf);
+      if(t.slice(0,2000).includes('\u0000'))throw new Error('o conteúdo é binário, não um CSV de texto.');
+      if(t.includes('\uFFFD')){t=new TextDecoder('windows-1252').decode(buf);S.notes.push('Codificação não era UTF-8: decodificado como Windows-1252.')}
+      const p=parseCSV(t);S.raw=p.rows;S.notes.push('Delimitador detectado: '+({',':'vírgula',';':'ponto e vírgula','\t':'tabulação'}[p.delim]));
+      $('#sheetBox').classList.add('hide');
+    }else{
+      const sig=new Uint8Array(buf.slice(0,4));if(!(sig[0]===0x50&&sig[1]===0x4B))throw new Error('o arquivo não é um .xlsx válido (assinatura ZIP ausente).');
+      await loadSheetJS();S.wb=XLSX.read(buf,{type:'array'});
+      const sel=$('#sheet');sel.replaceChildren();S.wb.SheetNames.forEach(n=>{const o=el('option',n);o.value=n;sel.append(o)});
+      $('#sheetBox').classList.toggle('hide',S.wb.SheetNames.length<2);readSheet();
+    }
+  }catch(e){return say('Arquivo inválido ou ilegível: '+e.message)}
+  run();
+}
+function readSheet(){S.raw=XLSX.utils.sheet_to_json(S.wb.Sheets[$('#sheet').value||S.wb.SheetNames[0]],{header:1,raw:false,defval:''});S.notes=S.notes.filter(n=>!n.startsWith('Aba'));S.notes.push('Aba analisada: '+($('#sheet').value||S.wb.SheetNames[0])+' (valores lidos como texto formatado)')}
+
+// ---------- Análise ----------
+function run(){
+  const tolC=Math.round((parseFloat($('#tol').value)||0)*100);
+  const raw=S.raw.filter(r=>r.some(v=>!isEmpty(v)));
+  if(raw.length<2)return say('Não há registros para analisar (apenas cabeçalho ou arquivo sem dados).');
+  const header=raw[0].map(h=>String(h).trim()),nc=header.length;
+  const recs=raw.slice(1).map((v,i)=>({n:i+1,v}));// n = número do registro (1 = primeira linha de dados)
+  const read=recs.length,good=recs.filter(r=>r.v.length===nc),bad=recs.filter(r=>r.v.length!==nc);
+  const nn=header.map(norm),D=[];
+  const dg=(rule,name,sev,cols,n,found,exp)=>D.push({rule,name,sev,cols:cols.join(', '),n,found,exp:exp??''});
+  bad.forEach(r=>dg('R00','Estrutura da linha','Alto',[],r.n,r.v.length+' campos','Esperado: '+nc+' campos (registro não analisado)'));
+  const rows=good,N=rows.length;
+  // Perfil
+  const prof=header.map((h,j)=>{
+    let nulls=0,nu=0,tx=0;const dist=new Set(),ex=[];
+    rows.forEach(r=>{const v=r.v[j];if(isEmpty(v)){nulls++;return}dist.add(v);if(ex.length<3&&!ex.includes(v))ex.push(v);isNaN(num(v))?tx++:nu++});
+    const mixed=nu>0&&tx>0,fill=N-nulls;
+    let type=mixed?'Misto':nu?'Numérico':'Texto';
+    const cal=['ano','mes','dia'].includes(nn[j]);
+    const kind=cal?'Calendário':/^(id|codigo|cpf|cnpj)$|_id$/.test(nn[j])?'Identificador':type==='Numérico'?'Métrica':'Dimensão';
+    return{col:h,norm:nn[j],type,nulls,distinct:dist.size,filled:fill,compl:N?fill/N*100:0,ex,invalid:mixed?Math.min(nu,tx):0,majNum:nu>=tx,mixed,kind};
+  });
+  // R01 completude
+  prof.forEach((p,j)=>{if(p.nulls)rows.forEach(r=>{if(isEmpty(r.v[j]))dg('R01','Completude','Baixo',[p.col],r.n,'(vazio)','Valor preenchido')})});
+  // R02 duplicidade (mantém a primeira ocorrência; não elimina nada)
+  const seen=new Map();let dups=0;
+  rows.forEach(r=>{const k=JSON.stringify(r.v);if(seen.has(k)){dups++;dg('R02','Linha duplicada','Médio',['todas'],r.n,'Igual ao registro '+seen.get(k),'Registro único')}else seen.set(k,r.n)});
+  // R03 tipos mistos
+  prof.forEach((p,j)=>{if(p.mixed)rows.forEach(r=>{const v=r.v[j];if(isEmpty(v))return;const isN=!isNaN(num(v));if(p.majNum?!isN:isN)dg('R03','Mistura texto/número','Médio',[p.col],r.n,v,p.majNum?'Número':'Texto')})});
+  // R04 calendário
+  // Mapeamento de colunas: automático por nome (com sinônimos); o usuário pode ajustar na tela
+  const find=re=>nn.findIndex(n=>re.test(n)),aut={rev:find(/^(receita|receitas|faturamento|revenue|sales|vendas|total_vendas|valor_venda|valor_vendas|valor_total)$/),cost:find(/^(custo|custos|custo_total|cost|costs|valor_custo)$/),prof:find(/^(lucro|lucro_total|lucro_liquido|profit|net_profit)$/),prod:find(/^(produto|product|nome_produto|product_name|item)$/),cat:find(/^(categoria|category|segmento|grupo)$/),ano:find(/^(ano|year)$/),mes:find(/^(mes|month)$/),dia:find(/^(dia|day)$/),data:find(/^(data|date|data_venda|data_pedido|dt_venda)$/)};
+  const M={};for(const k in aut){const o=S.map&&S.map[k];M[k]=o===undefined?aut[k]:o}
+  const iA=M.ano,iM=M.mes,iD=M.dia,iDt=M.data;let calRun=iA>=0||iM>=0||iD>=0||iDt>=0;
+  if(calRun)rows.forEach(r=>{
+    const g=i=>i>=0&&!isEmpty(r.v[i])?num(r.v[i]):NaN;const a=g(iA),m=g(iM),d=g(iD);
+    if(iM>=0&&!isEmpty(r.v[iM])&&!(Number.isInteger(m)&&m>=1&&m<=12))dg('R04','Mês fora do intervalo','Alto',[header[iM]],r.n,r.v[iM],'Inteiro de 1 a 12');
+    if(iD>=0&&!isEmpty(r.v[iD])&&!(Number.isInteger(d)&&d>=1&&d<=31))dg('R04','Dia fora do intervalo','Alto',[header[iD]],r.n,r.v[iD],'Inteiro de 1 a 31');
+    else if(Number.isInteger(a)&&Number.isInteger(m)&&Number.isInteger(d)&&m>=1&&m<=12){const t=new Date(Date.UTC(a,m-1,d));if(t.getUTCMonth()!==m-1||t.getUTCDate()!==d)dg('R04','Data inexistente','Alto',[header[iA],header[iM],header[iD]],r.n,d+'/'+m+'/'+a,'Data existente no calendário')}});
+  if(iDt>=0)rows.forEach(r=>{const v=r.v[iDt];if(isEmpty(v))return;const p=pdate(v);
+    if(!p)dg('R04','Formato de data não reconhecido','Médio',[header[iDt]],r.n,v,'AAAA-MM-DD ou DD/MM/AAAA');
+    else if(!p.ok)dg('R04','Data inexistente','Alto',[header[iDt]],r.n,v,'Data existente no calendário')});
+  // R05/R06 financeiro (em centavos inteiros)
+  const iR=M.rev,iC=M.cost,iL=M.prof,iP=M.prod;
+  const finRun=iR>=0&&iC>=0&&iL>=0,fin={det:[],checked:0,unver:0},cents=x=>Math.round(num(x)*100);
+  const sums={r:0,c:0,l:0};let hasR=0,hasL=0;
+  if(finRun)rows.forEach(r=>{
+    [[iR,'Receita'],[iC,'Custo'],[iL,'Lucro']].forEach(([i,lb])=>{const v=r.v[i];if(isEmpty(v))return;const x=num(v);if(isNaN(x))return;
+      if(x<0)dg('R06','Valor negativo','Informativo',[lb],r.n,v,'Pode ser estorno/prejuízo legítimo');else if(x===0)dg('R06','Valor zero','Informativo',[lb],r.n,v,'')});
+    const vs=[iR,iC,iL].map(i=>r.v[i]);
+    if(vs.some(v=>isEmpty(v)||isNaN(num(v)))){fin.unver++;return}
+    fin.checked++;const R=cents(vs[0]),C=cents(vs[1]),L=cents(vs[2]),calc=R-C,diff=calc-L;
+    sums.r+=R;sums.c+=C;sums.l+=L;hasR=hasL=1;
+    if(Math.abs(diff)>tolC){const o={n:r.n,prod:iP>=0?r.v[iP]:'',R:R/100,C:C/100,L:L/100,calc:calc/100,diff:diff/100};fin.det.push(o);
+      dg('R05','Lucro ≠ Receita − Custo','Crítico',[header[iR],header[iC],header[iL]],r.n,'Lucro informado '+money(o.L),'Lucro calculado '+money(o.calc)+' (diferença '+money(o.diff)+')')}});
+  // Contrato
+  const cnt=id=>D.filter(d=>d.rule===id).length,st=(run,n,warn)=>!run?'Não avaliada':n?(warn||'Falha'):'Aprovada';
+  const rules=[
+    ['R00','Estrutura das linhas',st(true,bad.length),bad.length,'Linhas com nº de campos diferente do cabeçalho'],
+    ['R01','Completude',st(N>0,cnt('R01'),'Atenção'),cnt('R01'),N?'':'Sem registros'],
+    ['R02','Unicidade (linhas inteiras)',st(N>0,dups,'Atenção'),dups,'Chaves personalizadas: não implementado'],
+    ['R03','Tipos de dados',st(N>0,cnt('R03'),'Atenção'),cnt('R03'),'Detecta colunas com números e textos misturados'],
+    ['R04','Calendário (ano/mês/dia)',st(calRun,cnt('R04')),cnt('R04'),calRun?'':'Colunas ano/mes/dia ou data não encontradas'],
+    ['R05','Lucro = Receita − Custo',st(finRun,cnt('R05')),cnt('R05'),finRun?'Tolerância: '+money(tolC/100):'Colunas Receita, Custo e Lucro não encontradas'],
+    ['R06','Negativos/zeros financeiros',st(finRun,cnt('R06'),'Atenção'),cnt('R06'),finRun?'Informativo; não são tratados como erro':'Colunas financeiras ausentes']];
+  const end=new Date(),cells=N*nc,filled=prof.reduce((a,p)=>a+p.filled,0);
+  S.res={M,read,analyzed:N,notAnalyzed:read-N+0,cols:nc,header,prof,rules,D,fin,finRun,dups,iR,iC,iL,sums,nn,rows,iP,
+    compl:cells?filled/cells*100:0,end,ms:Math.round(performance.now()-S.p0),tol:tolC/100};
+  render();
+}
+
+// ---------- Apresentação ----------
+function table(cols,rows){const t=el('table'),h=el('thead'),tr=el('tr');cols.forEach(c=>tr.append(el('th',c)));h.append(tr);t.append(h);
+  const b=el('tbody');rows.forEach(r=>{const x=el('tr');r.forEach(v=>{if(v instanceof Node){const td=el('td');td.append(v);x.append(td)}else x.append(el('td',v))});b.append(x)});t.append(b);const w=el('div',null,'tw');w.append(t);return w}
+const badge=s=>el('span',s,'b '+s.replace(/\s/g,''));
+const brt=d=>d.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'});
+function bars(host,labels,vals,fmt){S['ch_'+host.id]=[labels,vals];host.replaceChildren();const mx=Math.max(...vals.map(Math.abs),1);
+  labels.forEach((l,i)=>{const b=el('div',null,'bar'),i2=el('i');i2.style.width=Math.max(2,Math.abs(vals[i])/mx*100)+'%';b.append(el('span',l),i2,el('span',fmt(vals[i])));host.append(b)})}
+function render(){
+  const R=S.res;$('#out').classList.remove('hide');$('#rest').classList.remove('hide');
+  const kp=[['Registros analisados',F0.format(R.analyzed)],['Colunas',R.cols],['Completude',pct(R.compl)],['Duplicados',R.dups],['Diagnósticos',F0.format(R.D.length)],
+    ['Divergências financeiras',R.finRun?R.fin.det.length:'n/a'],['Não verificáveis',R.finRun?R.fin.unver:'n/a']];
+  if(R.finRun&&R.fin.checked){kp.push(['Receita',money(R.sums.r/100)],['Custo',money(R.sums.c/100)],['Lucro (informado)',money(R.sums.l/100)]);if(R.sums.r)kp.push(['Margem',pct(R.sums.l/R.sums.r*100)])}
+  S.kp=kp;const K=$('#kpis');K.replaceChildren();kp.forEach(([a,b])=>{const c=el('div',null,'card k');c.append(el('span',a),el('strong',b));K.append(c)});
+  $('#transf').textContent='Transformações: nenhuma alteração nos dados originais. '+S.notes.concat(['Linhas totalmente vazias ignoradas; valores vazio/null/nulo/nan/n/a tratados como ausentes; números convertidos só para análise (formato BR ou internacional por heurística).']).join(' ');
+  $('#rname').textContent=S.name;
+  const mp=$('#mp');mp.replaceChildren();
+  [['rev','Receita'],['cost','Custo'],['prof','Lucro'],['prod','Produto'],['cat','Categoria'],['ano','Ano'],['mes','Mês'],['dia','Dia'],['data','Data completa']].forEach(([k,l])=>{
+    const w=el('div'),sl=el('select'),lb=el('label',l+' ');sl.id='mp_'+k;lb.htmlFor=sl.id;const o0=el('option','— nenhuma —');o0.value='-1';sl.append(o0);
+    R.header.forEach((h,i)=>{const o=el('option',h);o.value=i;sl.append(o)});sl.value=String(R.M[k]);
+    sl.onchange=()=>{S.map=S.map||{};S.map[k]=+sl.value;S.start=new Date();S.p0=performance.now();run()};w.append(lb,sl);mp.append(w)});
+  const colSum=i=>{let t=0,k=0;R.rows.forEach(r=>{if(isEmpty(r.v[i]))return;const v=num(r.v[i]);if(!isNaN(v)){t+=Math.round(v*100);k++}});return k?t/100:null};
+  const mets=R.prof.filter(p=>p.kind==='Métrica'),miss=R.prof.reduce((a,p)=>a+p.nulls,0),ins=[];
+  ins.push(miss?F0.format(miss)+' valores ausentes encontrados.':'Não foram encontrados valores ausentes.');
+  ins.push(R.dups?F0.format(R.dups)+' linhas duplicadas encontradas.':'Não foram encontradas linhas duplicadas.');
+  ins.push(mets.length+' métricas numéricas identificadas.');
+  [['Receita',R.iR],['Custo',R.iC],['Lucro',R.iL]].forEach(([l,i])=>{if(i>=0){const t=colSum(i);if(t!==null)ins.push(l+' total (soma da coluna): '+money(t)+'.')}});
+  const iMg=R.nn.findIndex(n=>/^(margem|margem_percentual|margem_lucro|margem_de_lucro|margin|profit_margin)$/.test(n));
+  if(iMg>=0){const v=R.rows.map(r=>isEmpty(r.v[iMg])?NaN:num(r.v[iMg])).filter(x=>!isNaN(x));if(v.length)ins.push('Margem percentual média: '+pct(v.reduce((a,b)=>a+b,0)/v.length)+'.')}
+  ins.push('Consulte o Contrato de Qualidade: não é atribuído índice único de qualidade.');
+  S.ins=ins;const ul=el('ul');ins.forEach(t=>ul.append(el('li',t)));$('#ins').replaceChildren(ul);
+  const tags=(h,a)=>h.replaceChildren(...(a.length?a:['Nenhum']).map(t=>el('span',t,'tag')));
+  tags($('#fcs'),R.finRun?['Linhas lidas: '+R.read,'Verificadas: '+R.fin.checked,'Com divergência: '+R.fin.det.length,'Não verificadas: '+R.fin.unver]:['Não avaliada: colunas financeiras ausentes']);
+  tags($('#mt'),mets.map(p=>p.col));
+  tags($('#cal'),R.prof.filter(p=>p.kind==='Calendário').map(p=>{const i=R.header.indexOf(p.col);let lo=Infinity,hi=-Infinity;R.rows.forEach(r=>{const v=isEmpty(r.v[i])?NaN:num(r.v[i]);if(!isNaN(v)){if(v<lo)lo=v;if(v>hi)hi=v}});return p.col+': '+(lo===Infinity?'n/d':lo+' a '+hi)}));
+  tags($('#al'),R.finRun?[['Receita',R.iR],['Custo',R.iC],['Lucro',R.iL]].map(([l,i])=>{let n=0,z=0,m=0;R.rows.forEach(r=>{const v=r.v[i];if(isEmpty(v)){m++;return}const x=num(v);if(x<0)n++;else if(x===0)z++});return l+': negativos '+n+' | zeros '+z+' | ausentes '+m}):['Não avaliado: colunas financeiras ausentes']);
+  const sr=mets.map(p=>{const i=R.header.indexOf(p.col),v=R.rows.map(r=>isEmpty(r.v[i])?NaN:num(r.v[i])).filter(x=>!isNaN(x)).sort((a,b)=>a-b);if(!v.length)return null;const sm=v.reduce((a,b)=>a+b,0),md=v.length%2?v[(v.length-1)/2]:(v[v.length/2-1]+v[v.length/2])/2;return[p.col,F2.format(v[0]),F2.format(v[v.length-1]),F2.format(sm/v.length),F2.format(md),/margem|percent|margin/.test(p.norm)?'—':F2.format(sm)]}).filter(Boolean);
+  S.sr=sr;$('#st').replaceChildren(sr.length?table(['Métrica','Mínimo','Máximo','Média','Mediana','Total'],sr):el('p','Sem colunas numéricas.'));
+  // esquema
+  const draw=()=>{const f=$('#pf').value;const P=R.prof.filter(p=>f==='all'||(f==='prob'&&(p.nulls||p.mixed))||(f==='ok'&&!p.nulls&&!p.mixed)||(f==='mix'&&p.mixed));
+    $('#schema').replaceChildren(P.length?table(['Coluna','Normalizado','Tipo','Classe','Nulos','Distintos','Preenchidos','Completude','Inválidos','Exemplos'],P.map(p=>[p.col,p.norm,p.type+(p.mixed?' (misto)':''),p.kind,p.nulls,p.distinct,p.filled,pct(p.compl),p.invalid,p.ex.join(' | ')])):el('p','Nenhuma coluna neste filtro.'))};
+  $('#pf').onchange=draw;draw();
+  $('#rules').replaceChildren(table(['Regra','Nome','Estado','Ocorrências','Observação'],R.rules.map(r=>[r[0],r[1],badge(r[2]),r[3],r[4]])));
+  // diagnósticos
+  const fr=$('#fr');fr.replaceChildren();[['','Todas (5 exemplos por regra)']].concat(R.rules.filter(r=>r[3]).map(r=>[r[0],r[0]+' — '+r[1]])).forEach(([v,t])=>{const o=el('option',t);o.value=v;fr.append(o)});
+  const dd=()=>{const rl=fr.value,sv=$('#fs').value;let L=R.D.filter(d=>(!sv||d.sev===sv)&&(!rl||d.rule===rl)),tot=L.length;
+    if(!rl){const c={};L=L.filter(d=>(c[d.rule]=(c[d.rule]||0)+1)<=5)}else L=L.slice(0,200);
+    $('#dg').replaceChildren(el('p','Mostrando '+L.length+' de '+F0.format(tot)+' ocorrências. Escolha uma regra para ver até 200; exporte o CSV para todas.','note'),
+      L.length?table(['Regra','Nome','Severidade','Coluna(s)','Registro','Valor encontrado','Esperado'],L.map(d=>[d.rule,d.name,d.sev,d.cols,d.n,d.found,d.exp])):el('p','Nenhum diagnóstico.'))};
+  fr.onchange=$('#fs').onchange=dd;dd();
+  // financeiro
+  const fi=$('#fi');fi.replaceChildren();
+  if(!R.finRun)fi.append(el('p','Não avaliado: colunas de Receita, Custo e Lucro não foram todas encontradas.'));
+  else{fi.append(el('p','Linhas lidas: '+R.read+' · financeiras verificadas: '+R.fin.checked+' · não verificadas: '+R.fin.unver+' · divergências: '+R.fin.det.length+' · tolerância: '+money(R.tol)),
+    R.fin.det.length?table(['Registro','Produto','Receita','Custo','Lucro informado','Lucro calculado','Diferença','Regra','Situação'],R.fin.det.map(o=>[o.n,o.prod,money(o.R),money(o.C),money(o.L),money(o.calc),money(o.diff),'Lucro = Receita − Custo','Divergente'])):el('p','Nenhuma divergência encontrada nas linhas verificadas.'))}
+  // gráficos
+  const agg=(keyf)=>{const m=new Map();R.rows.forEach(r=>{const v=num(r.v[R.iR]);if(isNaN(v))return;const k=keyf(r);if(k==null)return;m.set(k,(m.get(k)||0)+Math.round(v*100))});return m};
+  const iCat=R.M.cat;
+  if(R.iR>=0&&iCat>=0){const m=[...agg(r=>isEmpty(r.v[iCat])?null:r.v[iCat])].sort((a,b)=>b[1]-a[1]).slice(0,8);bars($('#c1'),m.map(x=>x[0]),m.map(x=>x[1]/100),money)}else $('#c1').replaceChildren(el('p','Não aplicável: requer colunas Receita e Categoria.','note'));
+  const iA=R.M.ano,iM=R.M.mes,iDt=R.M.data,ym=r=>{if(iA>=0&&iM>=0){const a=num(r.v[iA]),b=num(r.v[iM]);return Number.isInteger(a)&&Number.isInteger(b)&&b>=1&&b<=12?a*100+b:null}if(iDt>=0){const p=pdate(r.v[iDt]);return p&&p.ok?p.y*100+p.m:null}return null};
+  if(R.iR>=0&&((iA>=0&&iM>=0)||iDt>=0)){const m=[...agg(ym)].sort((a,b)=>a[0]-b[0]);
+    bars($('#c2'),m.map(x=>String(x[0]%100).padStart(2,'0')+'/'+Math.floor(x[0]/100)),m.map(x=>x[1]/100),money)}else $('#c2').replaceChildren(el('p','Não aplicável: requer Receita e (Ano e Mês, ou uma coluna de Data).','note'));
+  // trace
+  S.trace={id:'DAP-'+S.start.getUTCFullYear()+'-'+S.start.getTime().toString(36).toUpperCase(),arquivo:S.name,formato:S.format,bytes:S.size,sha256:S.hash||null,sha256_metodo:S.hm||null,inicio_utc:S.start.toISOString(),fim_utc:R.end.toISOString(),duracao_ms:R.ms,
+    linhas_lidas:R.read,linhas_analisadas:R.analyzed,linhas_nao_analisadas:R.read-R.analyzed,colunas:R.cols,regras_executadas:R.rules.filter(r=>r[2]!=='Não avaliada').length,regras_aprovadas:R.rules.filter(r=>r[2]==='Aprovada').length,
+    regras_com_falha:R.rules.filter(r=>r[2]==='Falha').length,diagnosticos:R.D.length,versao_contrato:'1.0'};
+  const T=S.trace;$('#tr').replaceChildren(el('p','Linhas lidas = registros de dados após o cabeçalho (linhas totalmente vazias excluídas). Analisadas = lidas com o mesmo nº de campos do cabeçalho. Não analisadas = lidas − analisadas.','note'),
+    table(['Item','Valor'],[['Execução',T.id],['Horário técnico','UTC (ISO 8601)'],['Início UTC',T.inicio_utc],['Fim UTC',T.fim_utc],['Horário exibido (Brasília)',brt(S.start)],['Arquivo',T.arquivo+' ('+T.formato+', '+F0.format(T.bytes)+' bytes)'],
+    ['SHA-256 (bytes originais)',T.sha256+' — método: '+T.sha256_metodo],['Duração',T.duracao_ms+' ms'],['Linhas lidas / analisadas / não analisadas',T.linhas_lidas+' / '+T.linhas_analisadas+' / '+T.linhas_nao_analisadas],
+    ['Colunas',T.colunas],['Regras executadas / aprovadas / com falha',T.regras_executadas+' / '+T.regras_aprovadas+' / '+T.regras_com_falha],['Diagnósticos',T.diagnosticos],['Versão do contrato',T.versao_contrato]]));
+}
+
+// ---------- Exportação ----------
+function save(name,type,txt){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+const safe=v=>{v=String(v??'');return /^[=+@]|^-(?!\d)/.test(v)?"'"+v:v};
+$('#xj').onclick=()=>{const R=S.res;save('data-agent-pilot-'+S.trace.id+'.json','application/json',JSON.stringify({rastreabilidade:S.trace,contrato:R.rules.map(r=>({regra:r[0],nome:r[1],estado:r[2],ocorrencias:r[3],observacao:r[4]})),
+  perfil_colunas:R.prof.map(({col,norm,type,nulls,distinct,filled,compl,ex,invalid,kind})=>({col,norm,type,nulls,distinct,filled,compl,ex,invalid,kind})),diagnosticos:R.D,consistencia_financeira:R.finRun?{verificadas:R.fin.checked,nao_verificadas:R.fin.unver,divergencias:R.fin.det}:'Não avaliada'},null,2))};
+$('#xc').onclick=()=>{const q=v=>'"'+safe(v).replace(/"/g,'""')+'"';
+  save('diagnosticos-'+S.trace.id+'.csv','text/csv;charset=utf-8','\uFEFF'+['regra,nome,severidade,colunas,registro,valor_encontrado,esperado'].concat(S.res.D.map(d=>[d.rule,d.name,d.sev,d.cols,d.n,d.found,d.exp].map(q).join(','))).join('\r\n'))};
+// ---------- Entradas ----------
+let PEND=null;function setPend(b,n){PEND={b,n};$('#selFile').textContent=n+' • '+(b.byteLength>=1048576?(b.byteLength/1048576).toFixed(1)+' MB':F0.format(Math.ceil(b.byteLength/1024))+' KB');$('#go').disabled=false;say('')}
+const pick=async f=>{if(f)setPend(await f.arrayBuffer(),f.name)};
+$('#sel').onclick=()=>$('#file').click();
+$('#go').onclick=async()=>{if(!PEND)return;$('#ld').classList.remove('hide');await new Promise(r=>setTimeout(r,30));try{await load(PEND.b,PEND.n)}finally{$('#ld').classList.add('hide')}};
+$('#file').onchange=e=>pick(e.target.files[0]);
+$('#sheet').onchange=()=>{readSheet();S.start=new Date();S.p0=performance.now();run()};
+$('#tol').onchange=()=>S.raw&&run();
+const dr=$('#drop');['dragenter','dragover'].forEach(t=>dr.addEventListener(t,e=>{e.preventDefault();dr.classList.add('on')}));
+['dragleave','drop'].forEach(t=>dr.addEventListener(t,e=>{e.preventDefault();dr.classList.remove('on')}));
+dr.addEventListener('drop',e=>pick(e.dataTransfer.files[0]));
+$('#demo').onclick=()=>setPend(new TextEncoder().encode('Produto,Receita,Custo,Lucro,Categoria,Ano,Mes,Dia\nProduto A,"100,00","20,00","80,00",Eletrônicos,2025,1,10\nProduto B,"-20,00","0,00","-20,00",Móveis,2025,1,15\nProduto C,"0,00","-5,00","4,00",Eletrônicos,2025,2,30\nProduto D,Nulo,Nulo,"0,00",Móveis,2025,13,5\n').buffer,'exemplo_ficticio.csv');
+
+// ---------- Exportações: PDF, dashboard HTML, descrição ----------
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+$('#xp').onclick=()=>{const T=S.trace;$('#pr').textContent='Execução '+T.id+' · Arquivo: '+T.arquivo+' · Início: '+brt(S.start)+' (Brasília) / '+T.inicio_utc+' (UTC) · SHA-256: '+(T.sha256||'não calculado');window.print()};
+function buildMd(){
+  const R=S.res,T=S.trace,L=[];
+  L.push('# Descrição da análise — Data Agent Pilot','','- Execução: '+T.id,'- Arquivo: '+T.arquivo+' ('+T.formato+', '+T.bytes+' bytes)','- SHA-256 (bytes originais): '+(T.sha256||'não calculado (requer HTTPS/localhost)'),'- Início: '+brt(S.start)+' (Brasília) | '+T.inicio_utc+' (UTC)','- Duração: '+T.duracao_ms+' ms','- Linhas lidas/analisadas/não analisadas: '+T.linhas_lidas+' / '+T.linhas_analisadas+' / '+T.linhas_nao_analisadas,'- Colunas: '+T.colunas,'','## Indicadores');
+  S.kp.forEach(([a,b])=>L.push('- '+a+': '+b));
+  L.push('','## Insights');S.ins.forEach(t=>L.push('- '+t));
+  L.push('','## Contrato de qualidade (v1.0)');R.rules.forEach(r=>L.push('- '+r[0]+' '+r[1]+': **'+r[2]+'** ('+r[3]+' ocorrências)'+(r[4]?' — '+r[4]:'')));
+  L.push('','## Diagnósticos por severidade');const c={};R.D.forEach(d=>c[d.sev]=(c[d.sev]||0)+1);Object.entries(c).forEach(([k,v])=>L.push('- '+k+': '+v));if(!R.D.length)L.push('- Nenhum diagnóstico.');
+  L.push('','## Consistência financeira');
+  if(!R.finRun)L.push('Não avaliada: colunas de Receita, Custo e Lucro não encontradas.');
+  else{L.push('Verificadas: '+R.fin.checked+' · não verificadas: '+R.fin.unver+' · divergências: '+R.fin.det.length+' · tolerância: '+money(R.tol));R.fin.det.slice(0,50).forEach(o=>L.push('- Registro '+o.n+(o.prod?' ('+o.prod+')':'')+': informado '+money(o.L)+', calculado '+money(o.calc)+', diferença '+money(o.diff)));if(R.fin.det.length>50)L.push('- … e mais '+(R.fin.det.length-50)+' divergências (veja o JSON).')}
+  L.push('','## Transformações e limitações','- Nenhum dado original foi alterado; números convertidos só para análise (heurística BR/internacional).','- Valores vazio/null/nulo/nan/n/a tratados como ausentes.',...S.notes.map(n=>'- '+n),'- Não é calculado índice único de qualidade.','- Regras "Não avaliada" não foram executadas por falta de colunas aplicáveis.');
+  return L.join('\n');
+}
+$('#xm').onclick=()=>save('descricao-analise-'+S.trace.id+'.md','text/markdown;charset=utf-8',buildMd());
+function buildDash(){
+  const R=S.res,T=S.trace;
+  const data={n:S.name,brt:brt(S.start),t:T,kp:S.kp,ins:S.ins,sr:S.sr||[],rules:R.rules,fin:R.finRun?R.fin.det:null,fc:R.finRun?[R.fin.checked,R.fin.unver]:null,c1:S.ch_c1||null,c2:S.ch_c2||null,d:R.D.slice(0,2000),dn:R.D.length};
+  const json=JSON.stringify(data).replace(/</g,'\\u003c');
+  const css=document.querySelector('style').textContent;
+  const code=`const F2=new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});let S={};
+const el=${el};const money=${money};const table=${table};const badge=${badge};const bars=${bars};
+const D=JSON.parse(document.getElementById('d').textContent),$=s=>document.querySelector(s);
+D.kp.forEach(([a,b])=>{const c=el('div',null,'card k');c.append(el('span',a),el('strong',String(b)));$('#kpis').append(c)});
+const ul=el('ul');D.ins.forEach(t=>ul.append(el('li',t)));$('#ins').append(ul);
+$('#fc').append(el('p',D.fc?('Verificadas: '+D.fc[0]+' · não verificadas: '+D.fc[1]+' · divergências: '+D.fin.length):'Não avaliada: colunas financeiras ausentes.'));
+if(D.fin&&D.fin.length)$('#fi').append(table(['Registro','Produto','Receita','Custo','Lucro informado','Lucro calculado','Diferença'],D.fin.map(o=>[o.n,o.prod,money(o.R),money(o.C),money(o.L),money(o.calc),money(o.diff)])));else $('#fi').append(el('p','Sem divergências a listar.'));
+D.c1?bars($('#c1'),D.c1[0],D.c1[1],money):$('#c1').append(el('p','Não aplicável.','note'));
+D.c2?bars($('#c2'),D.c2[0],D.c2[1],money):$('#c2').append(el('p','Não aplicável.','note'));
+if(D.sr.length)$('#st').append(table(['Métrica','Mínimo','Máximo','Média','Mediana','Total'],D.sr));
+$('#rules').append(table(['Regra','Nome','Estado','Ocorrências','Observação'],D.rules.map(r=>[r[0],r[1],badge(r[2]),r[3],r[4]])));
+$('#tr').append(table(['Item','Valor'],Object.entries(D.t).map(([k,v])=>[k,v===null?'NÃO CALCULADO':String(v)]).concat([['horario_brasilia',D.brt]])));
+const fr=$('#fr'),fs=$('#fs');[['','Todas (5 exemplos por regra)']].concat(D.rules.filter(r=>r[3]).map(r=>[r[0],r[0]+' — '+r[1]])).forEach(([v,t])=>{const o=el('option',t);o.value=v;fr.append(o)});
+function dd(){const rl=fr.value,sv=fs.value;let L=D.d.filter(d=>(!sv||d.sev===sv)&&(!rl||d.rule===rl)),tot=L.length;if(!rl){const c={};L=L.filter(d=>(c[d.rule]=(c[d.rule]||0)+1)<=5)}else L=L.slice(0,200);
+$('#dg').replaceChildren(el('p','Mostrando '+L.length+' de '+tot+' (snapshot com '+D.d.length+' de '+D.dn+' diagnósticos).','note'),L.length?table(['Regra','Nome','Severidade','Coluna(s)','Registro','Encontrado','Esperado'],L.map(d=>[d.rule,d.name,d.sev,d.cols,d.n,d.found,d.exp])):el('p','Nenhum diagnóstico.'))}
+fr.onchange=fs.onchange=dd;dd();`;
+  const card=(t,id,c)=>'<article class="card'+(c?' '+c:'')+'"><h3>'+t+'</h3><div id="'+id+'"></div></article>';
+  return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard — '+esc(S.name)+'</title><style>'+css+'</style></head><body><header><div class="w hd"><div class="logo"><div class="ic">DA</div><div><b>DATA AGENT PILOT</b><small>Dashboard exportado — snapshot da execução '+esc(T.id)+'</small></div></div></div></header><main class="w"><div class="sh" style="margin-top:24px"><div><span class="badge">DASHBOARD</span><h2>'+esc(S.name)+'</h2></div></div><div class="kpis" id="kpis"></div><p class="note">Snapshot estático dos resultados; contém dados da planilha. Funciona localmente, sem servidor nem internet.</p><div class="grid">'+card('Insights','ins')+card('Consistência Financeira','fc')+card('Divergências Financeiras','fi','full')+card('Receita por Categoria','c1')+card('Evolução Mensal da Receita','c2')+card('Estatísticas numéricas','st','full')+card('Contrato de Qualidade','rules','full')+'<article class="card full"><h3>Diagnósticos</h3><div class="row" style="margin:0 0 10px"><label for="fr">Regra</label><select id="fr"></select><label for="fs">Severidade</label><select id="fs"><option value="">Todas</option><option>Crítico</option><option>Alto</option><option>Médio</option><option>Baixo</option><option>Informativo</option></select></div><div id="dg"></div></article>'+card('Rastreabilidade','tr','full')+'</div></main><script type="application/json" id="d">'+json+'<\/script><script>'+code+'<\/script></body></html>';
+}
+$('#xh').onclick=()=>{if(confirm('O dashboard HTML conterá dados da sua planilha (inclusive valores encontrados nos diagnósticos). Compartilhe com cuidado. Continuar?'))save('dashboard-'+S.trace.id+'.html','text/html;charset=utf-8',buildDash())};
+</script>
+</body>
+</html>
